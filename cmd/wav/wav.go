@@ -134,7 +134,6 @@ func Decode(input io.Reader) (*Wav, error) {
 	decodedWav := &Wav{}
 	riff, err := util.ReadBytes(input, 4)
 	if err != nil {
-		fmt.Println("Here 6")
 		return nil, err
 	}
 	if string(riff) != "RIFF" {
@@ -143,13 +142,11 @@ func Decode(input io.Reader) (*Wav, error) {
 
 	_, err = util.ReadBytes(input, 4)
 	if err != nil {
-		fmt.Println("Here 7")
 		return nil, err
 	}
 
 	wave, err := util.ReadBytes(input, 4)
 	if err != nil {
-		fmt.Println("Here 8")
 		return nil, err
 	}
 	if string(wave) != "WAVE" {
@@ -161,13 +158,11 @@ func Decode(input io.Reader) (*Wav, error) {
 	for {
 		chunkHeader, err := util.ReadBytes(input, 4)
 		if err != nil {
-			fmt.Println("Here 1")
 			return nil, err
 		}
 
 		chunkSizeBytes, err := util.ReadBytes(input, 4)
 		if err != nil {
-			fmt.Println("Here 2")
 			return nil, err
 		}
 
@@ -176,21 +171,18 @@ func Decode(input io.Reader) (*Wav, error) {
 		if string(chunkHeader) == "fmt " {
 			err = readFmtChunk(input, decodedWav)
 			if err != nil {
-				fmt.Println("Here 3")
 				return nil, err
 			}
 		} else if string(chunkHeader) == "data" {
 			decodedWav.DataSize = chunkSize
 			err = readDataChunk(input, decodedWav, chunkSize)
 			if err != nil {
-				fmt.Println("Here 4")
 				return nil, err
 			}
 		} else {
 			// Skip to the next chunk
 			_, err = util.ReadBytes(input, int(chunkSize))
 			if err != nil {
-				fmt.Println("Here 5")
 				return nil, err
 			}
 		}
