@@ -62,3 +62,31 @@ speedyWav.SlowDown(4)
 
 // speedyWav will now be 4 times slower
 ```
+
+## Convert
+
+### Convert to Mono
+
+Convert a stereo audio file to a mono audio file using the `ConvertToMono` function.
+
+```go
+err := stereoWav.ConvertToMono()
+if err != nil {
+    panic(fmt.Sprintf("Converting wav file: %v", err.Error()))
+}
+
+// stereoWav is now a mono audio file
+```
+
+### Convert to Stereo
+
+Convert a mono audio file to a stereo audio file using the `ConvertToStereo` function.
+
+```go
+err := monoWav.ConvertToStereo()
+if err != nil {
+    panic(fmt.Sprintf("Converting wav file: %v", err.Error()))
+}
+
+// monoWav is now a stereo audio file
+```
