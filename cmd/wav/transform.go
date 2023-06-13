@@ -9,10 +9,12 @@ import (
 // SpeedUp speeds up the wav file by a specified factor.
 // This will not only increase the speed of the audio, but
 // will increase the pitch as well.
-func (w *Wav) SpeedUp(factor float32) {
-	// TODO: Make sure the resulting sample rate isn't above
-	// the max uint32
-	w.SampleRate = uint32(factor * float32(w.SampleRate))
+func (w *Wav) SpeedUp(factor float64) error {
+	if w.SampleRate > math.MaxUint32 / uint32(math.Ceil(factor)) {
+		return errors.New("resulting sample rate would be too large (> max uint32)")
+	}
+	w.SampleRate = uint32(factor * float64(w.SampleRate))
+	return nil
 }
 
 // SlowDown slows up the wav file by a specified factor.

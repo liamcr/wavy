@@ -18,7 +18,10 @@ func main() {
 		panic(fmt.Sprintf("decoding wav file: %v", err.Error()))
 	}
 
-	newWav.SpeedUp(2)
+	err = newWav.SpeedUp(5000000.3)
+	if err != nil {
+		panic(fmt.Sprintf("speeding up wav file: %v", err.Error()))
+	}
 
 	err = newWav.Write("output/output-speed-up.wav")
 	if err != nil {
