@@ -10,6 +10,8 @@ import (
 // This will not only increase the speed of the audio, but
 // will increase the pitch as well.
 func (w *Wav) SpeedUp(factor float32) {
+	// TODO: Make sure the resulting sample rate isn't above
+	// the max uint32
 	w.SampleRate = uint32(factor * float32(w.SampleRate))
 }
 
