@@ -63,6 +63,24 @@ speedyWav.SlowDown(4)
 // speedyWav will now be 4 times slower
 ```
 
+### Concatenate Two Audio Files
+
+After importing and decoding two audio files, you can concatenate them together
+by using the `.Concat` function.
+
+You can concatenate mono and stereo files together.
+
+TODO: Concatenate audio files with differing sample rates.
+
+```go
+err := firstWav.Concat(secondWav)
+if err != nil {
+    panic(fmt.Sprintf("Concatenating wav files: %v", err.Error()))
+}
+
+// firstWav is now the concatenated wav file. secondWav is unaffected.
+```
+
 ## Convert
 
 ### Convert to Mono
