@@ -1,6 +1,7 @@
 package wav
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/liamcr/wavy/internal/util"
@@ -77,4 +78,28 @@ func (w *Wav) GenerateSplinePoints(height, width float64, buckets, channel int) 
 	}
 
 	return splinePoints, nil
+}
+
+// CastToInt will a variable input value which could be uint8, int16, int32
+// or int64 and normalize it to be an int
+func CastToInt(v any) (int, error) {
+	uint8Val, ok := v.(uint8)
+	if ok {
+		return int(uint8Val), nil
+	}
+	int16Val, ok := v.(int16)
+	if ok {
+		return int(int16Val), nil
+	}
+	int32Val, ok := v.(int32)
+	if ok {
+		return int(int32Val), nil
+	}
+	int64Val, ok := v.(int64)
+	if ok {
+		return int(int64Val), nil
+	}
+
+	return 0, errors.New("cannot convert value to int")
+		
 }

@@ -82,25 +82,25 @@ func (w *Wav) Encode() ([]byte, error) {
 			if w.BitsPerSample == uint16(8) {
 				eightBitSample, ok := sample.(uint8)
 				if !ok {
-					return nil, fmt.Errorf("can't cast data point to byte")
+					return nil, fmt.Errorf("can't cast data point %v to byte", sample)
 				}
 				encodedWav = append(encodedWav, byte(eightBitSample))
 			} else if w.BitsPerSample == uint16(16) {
 				sixteenBitSample, ok := sample.(int16)
 				if !ok {
-					return nil, fmt.Errorf("can't cast data point to int16")
+					return nil, fmt.Errorf("can't cast data point %v to int16", sample)
 				}
 				encodedWav = append(encodedWav, util.UInt16ToBytes(uint16(sixteenBitSample))...)
 			} else if w.BitsPerSample == uint16(32) {
 				thirtyTwoBitSample, ok := sample.(int32)
 				if !ok {
-					return nil, fmt.Errorf("can't cast data point to int32")
+					return nil, fmt.Errorf("can't cast data point %v to int32", sample)
 				}
 				encodedWav = append(encodedWav, util.UInt32ToBytes(uint32(thirtyTwoBitSample))...)
 			} else if w.BitsPerSample == uint16(64) {
 				sixtyFourBitSample, ok := sample.(int64)
 				if !ok {
-					return nil, fmt.Errorf("can't cast data point to int64")
+					return nil, fmt.Errorf("can't cast data point %v to int64", sample)
 				}
 				encodedWav = append(encodedWav, util.UInt64ToBytes(uint64(sixtyFourBitSample))...)
 			}
