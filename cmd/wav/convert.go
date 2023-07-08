@@ -187,7 +187,7 @@ func resamplePoint(
 	filterCutoffFrequency float64,
 	windowWidth float64,
 ) int {
-	var r_w, r_a, sincVal float64
+	var weight, amplitude, sincVal float64
 
 	gainCorrectionFactor := 2 * filterCutoffFrequency / float64(initialSampleRate)
 	filteredSample := 0.0
@@ -195,17 +195,18 @@ func resamplePoint(
 	for i := -windowWidth / 2; i < windowWidth/2; i++ {
 		inputSampleIndex := int(x + float64(i))
 
-		// TODO: Rename these variables
-		r_w = 0.5 - 0.5 * math.Cos(2 * math.Pi * (0.5 + (float64(inputSampleIndex) - x) / windowWidth))
-		r_a = 2 * math.Pi * (float64(inputSampleIndex) - x) * filterCutoffFrequency / float64(initialSampleRate)
+		// weight ranges from 0 to -1, with lower values coming closer to the middle
+		// of the window
+		weight = 0.5 - 0.5 * math.Cos(2 * math.Pi * (0.5 + (float64(inputSampleIndex) - x) / windowWidth))
+		amplitude = math.Pi * (float64(inputSampleIndex) - x) * gainCorrectionFactor
 		sincVal = 1
 
-		if r_a != 0 {
-			sincVal = math.Sin(r_a) / r_a
+		if amplitude != 0 {
+			sincVal = math.Sin(amplitude) / amplitude
 		}
 
 		if inputSampleIndex >= 0 && inputSampleIndex < len(initialSamples) {
-			filteredSample += gainCorrectionFactor * r_w * sincVal * float64(initialSamples[inputSampleIndex])
+			filteredSample += gainCorrectionFactor * weight * sincVal * float64(initialSamples[inputSampleIndex])
 		}
 	}
 
