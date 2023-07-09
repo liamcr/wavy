@@ -3,6 +3,8 @@ package wav
 import (
 	"errors"
 	"fmt"
+	"math"
+	"os"
 
 	"github.com/liamcr/wavy/internal/util"
 )
@@ -10,7 +12,7 @@ import (
 // GenerateBucketedAvgSampleVals separates the audio file data into a set number of
 // buckets, by dividing the data array into equal parts, and averaging the amplitudes
 // over each part
-func (w *Wav) GenerateBucketedAvgSampleVals(buckets, channel int) ([]float64, error) {
+func (w *Wav) GenerateBucketedAvgSampleVals(buckets, channel int, abs bool) ([]float64, error) {
 	bucketVals := make([]float64, buckets)
 	samplesInBuckets := len(w.Data) / buckets
 
@@ -25,28 +27,48 @@ func (w *Wav) GenerateBucketedAvgSampleVals(buckets, channel int) ([]float64, er
 				if !ok {
 					return []float64{}, fmt.Errorf("could not convert %v to int", w.Data[i * samplesInBuckets + j].ChannelData[channel])
 				}
-				bucketVals[i] += float64(intVal)
+
+				if abs {
+					bucketVals[i] += math.Abs(float64(intVal))
+				} else {
+					bucketVals[i] += float64(intVal)
+				}
 			}
 			if w.BitsPerSample == uint16(16) {
 				intVal, ok := w.Data[i * samplesInBuckets + j].ChannelData[channel].(int16)
 				if !ok {
 					return []float64{}, fmt.Errorf("could not convert %v to int", w.Data[i * samplesInBuckets + j].ChannelData[channel])
 				}
-				bucketVals[i] += float64(intVal)
+
+				if abs {
+					bucketVals[i] += math.Abs(float64(intVal))
+				} else {
+					bucketVals[i] += float64(intVal)
+				}
 			}
 			if w.BitsPerSample == uint16(32) {
 				intVal, ok := w.Data[i * samplesInBuckets + j].ChannelData[channel].(int32)
 				if !ok {
 					return []float64{}, fmt.Errorf("could not convert %v to int", w.Data[i * samplesInBuckets + j].ChannelData[channel])
 				}
-				bucketVals[i] += float64(intVal)
+				
+				if abs {
+					bucketVals[i] += math.Abs(float64(intVal))
+				} else {
+					bucketVals[i] += float64(intVal)
+				}
 			}
 			if w.BitsPerSample == uint16(64) {
 				intVal, ok := w.Data[i * samplesInBuckets + j].ChannelData[channel].(int64)
 				if !ok {
 					return []float64{}, fmt.Errorf("could not convert %v to int", w.Data[i * samplesInBuckets + j].ChannelData[channel])
 				}
-				bucketVals[i] += float64(intVal)
+
+				if abs {
+					bucketVals[i] += math.Abs(float64(intVal))
+				} else {
+					bucketVals[i] += float64(intVal)
+				}
 			}
 		}
 
@@ -59,7 +81,7 @@ func (w *Wav) GenerateBucketedAvgSampleVals(buckets, channel int) ([]float64, er
 // GenerateSplinePoints generates a list of points that can be used to render
 // a waveform of the audio using motion canvas
 func (w *Wav) GenerateSplinePoints(height, width float64, buckets, channel int) ([][]float64, error) {
-	bucketedVals, err := w.GenerateBucketedAvgSampleVals(buckets, channel)
+	bucketedVals, err := w.GenerateBucketedAvgSampleVals(buckets, channel, false)
 	if err != nil {
 		return [][]float64{}, nil
 	}
@@ -102,4 +124,59 @@ func CastToInt(v any) (int, error) {
 
 	return 0, errors.New("cannot convert value to int")
 		
+}
+
+// Const vals representing GenerateSvg config
+const pathTemplate = "<rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" fill=\"%s\" ry=\"%d\" rx=\"%d\"/>"
+const svgHeight = 100
+const desiredPillWidth = 12
+const desiredPillMargin = 2
+const desiredSVGPadding = 2
+
+func (w *Wav) GenerateSvg(width, channel int, fill string) (*os.File, error) {
+	numBuckets := (width - 2 * desiredSVGPadding) / (desiredPillWidth + desiredPillMargin)
+	bucketedVals, err := w.GenerateBucketedAvgSampleVals(numBuckets, channel, false)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(bucketedVals[0])
+
+	outputFile, err := os.Create("output/wav.svg")
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := outputFile.Write([]byte(fmt.Sprintf("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%%\" height=\"100%%\" viewBox=\"0 -50 %d %d\">", width, svgHeight))); err != nil {
+		return nil, err
+	}
+
+	maxHeight, err := util.MaxVal(bucketedVals)
+	if err != nil {
+		return nil, err
+	}
+
+	for i, bucketVal := range bucketedVals {
+		pillHeight := (bucketVal / maxHeight) * float64((svgHeight - desiredSVGPadding))
+		if _, err := outputFile.Write([]byte(
+			fmt.Sprintf(
+				pathTemplate,
+				desiredSVGPadding + (i * (desiredPillMargin + desiredPillWidth)),
+				int(math.Min((-1 * (pillHeight / 2)), float64(-1 * desiredPillWidth / 2))),
+				desiredPillWidth,
+				int(math.Max(pillHeight, float64(desiredPillWidth))),
+				fill,
+				desiredPillWidth / 2,
+				desiredPillWidth / 2,
+			),
+		)); err != nil {
+			return nil, err
+		}
+	}
+
+	if _, err := outputFile.Write([]byte("</svg>")); err != nil {
+		return nil, err
+	}
+
+	return outputFile, nil
 }

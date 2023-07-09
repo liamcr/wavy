@@ -120,6 +120,11 @@ func (w *Wav) Write(filename string) error {
     if err != nil {
         return err
     }
+	defer func() {
+		if err := output.Close(); err != nil {
+			panic(fmt.Sprintf("closing file: %v", err.Error()))
+		}
+	}()
 
 	if _, err := output.Write(bytes); err != nil {
 		return err

@@ -23,12 +23,12 @@ func main() {
 		panic(fmt.Sprintf("decoding wav file: %v", err.Error()))
 	}
 
-	err = newWav.SpeedUp(2)
+	newWav.SlowDown(2)
 	if err != nil {
 		panic(fmt.Sprintf("speeding up wav file: %v", err.Error()))
 	}
 
-	err = newWav.Write("output/output-speed-up.wav")
+	err = newWav.Write("output/output-slow-down.wav")
 	if err != nil {
 		panic(fmt.Sprintf("Saving sped-up wav file: %v", err.Error()))
 	}
