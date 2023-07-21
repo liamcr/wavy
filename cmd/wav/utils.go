@@ -133,7 +133,7 @@ const desiredPillWidth = 12
 const desiredPillMargin = 2
 const desiredSVGPadding = 2
 
-func (w *Wav) GenerateSvg(width, channel int, fill string) (*os.File, error) {
+func (w *Wav) GenerateSvg(outputPath string, width, channel int, fill string) (*os.File, error) {
 	numBuckets := (width - 2 * desiredSVGPadding) / (desiredPillWidth + desiredPillMargin)
 	bucketedVals, err := w.GenerateBucketedAvgSampleVals(numBuckets, channel, false)
 	if err != nil {
@@ -142,7 +142,7 @@ func (w *Wav) GenerateSvg(width, channel int, fill string) (*os.File, error) {
 
 	fmt.Println(bucketedVals[0])
 
-	outputFile, err := os.Create("output/wav.svg")
+	outputFile, err := os.Create(outputPath)
 	if err != nil {
 		return nil, err
 	}

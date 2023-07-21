@@ -30,9 +30,6 @@ func (w *Wav) SlowDown(factor float32) {
 func (w *Wav) Concat(toAdd *Wav) error {
 	revertAddedWav := false
 
-	// TODO: Just like we're standardizing the number of channels,
-	// we need to think of the case where there are differing sample rates,
-	// and differing bit depths
 	if w.Channels == 2 || toAdd.Channels == 2 {
 		if w.Channels == 1 {
 			err := w.ConvertToStereo()
@@ -54,8 +51,37 @@ func (w *Wav) Concat(toAdd *Wav) error {
 		}
 	}
 
+	if w.SampleRate != toAdd.SampleRate {
+		// Resample the current audio file so as to not introduce side effects
+		// to the file being appended.
+		w.Resample(toAdd.SampleRate)
+	}
+
 	w.Data = append(w.Data, toAdd.Data...)
-	w.DataSize = w.DataSize + toAdd.DataSize
+	maxBitDepth := uint16(math.Max(float64(w.BitsPerSample), float64(toAdd.BitsPerSample)))
+
+	// If there are differing bit depths we should normalize them
+	if w.BitsPerSample != toAdd.BitsPerSample {
+		for _, sampleGroup := range(w.Data) {
+			for j := 0; j < int(w.Channels); j++ {
+				intVal, err := CastToInt(sampleGroup.ChannelData[j])
+				if err != nil {
+					return err
+				}
+				if maxBitDepth == uint16(16) {
+					sampleGroup.ChannelData[j] = int16(intVal)
+				}
+				if maxBitDepth == uint16(32) {
+					sampleGroup.ChannelData[j] = int32(intVal)
+				}
+				if maxBitDepth == uint16(64) {
+					sampleGroup.ChannelData[j] = int64(intVal)
+				}
+			}
+		}
+	}
+
+	w.DataSize = uint32(len(w.Data) + len(toAdd.Data) * int(w.Channels) * (int(maxBitDepth) / 8))
 
 	if revertAddedWav {
 		err := toAdd.ConvertToMono()

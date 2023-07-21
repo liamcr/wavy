@@ -108,3 +108,21 @@ if err != nil {
 
 // monoWav is now a stereo audio file
 ```
+
+## Other
+
+### Generate SVG
+
+When incorporating this library into any kind of audio manipulation application,
+it's important to provide some kind of visual component to the audio files. The
+`GenerateSVG` function takes the given wav file and outputs an SVG representing
+it's waveform.
+
+```go
+output, err = wavForm.GenerateSvg("output.svg", 350, 0, "#ff0")
+if err != nil {
+    panic(fmt.Sprintf("decoding wav file: %v", err.Error()))
+}
+
+// output is an `os.File` representing the resulting svg file
+```

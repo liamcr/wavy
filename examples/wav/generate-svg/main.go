@@ -23,7 +23,7 @@ func main() {
 		panic(fmt.Sprintf("decoding wav file: %v", err.Error()))
 	}
 
-	_, err = newWav.GenerateSvg(350, 0, "#ff0")
+	_, err = newWav.GenerateSvg("output/output.svg", 350, 0, "#ff0")
 	if err != nil {
 		panic(fmt.Sprintf("decoding wav file: %v", err.Error()))
 	}
