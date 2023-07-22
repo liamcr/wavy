@@ -243,6 +243,10 @@ func readFmtChunk(input io.Reader, wav *Wav) error {
 	}
 	wav.BitsPerSample = util.BytesToUInt16(bitsPerSample)
 
+	if wav.BitsPerSample != 16 {
+		return fmt.Errorf("only 16-bit wav files are currently supported (current bits/sample = %v)", wav.BitsPerSample)
+	}
+
 	return nil
 }
 
