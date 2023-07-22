@@ -140,8 +140,6 @@ func (w *Wav) GenerateSvg(outputPath string, width, channel int, fill string) (*
 		return nil, err
 	}
 
-	fmt.Println(bucketedVals[0])
-
 	outputFile, err := os.Create(outputPath)
 	if err != nil {
 		return nil, err

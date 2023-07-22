@@ -7,8 +7,10 @@ import (
 	"github.com/liamcr/wavy/cmd/wav"
 )
 
+const currentDirectory = "examples/wav/concat"
+
 func main() {
-	firstWavFile, err := os.Open("input/input.wav")
+	firstWavFile, err := os.Open(fmt.Sprintf("%s/input0.wav", currentDirectory))
 	if err != nil {
 		panic(fmt.Sprintf("opening wav file: %v", err.Error()))
 	}
@@ -18,7 +20,7 @@ func main() {
 		}
 	}()
 
-	secondWavFile, err := os.Open("input/inputToConcatenate.wav")
+	secondWavFile, err := os.Open(fmt.Sprintf("%s/input1.wav", currentDirectory))
 	if err != nil {
 		panic(fmt.Sprintf("opening wav file: %v", err.Error()))
 	}
@@ -43,8 +45,10 @@ func main() {
 		panic(fmt.Sprintf("concatenating wav files: %v", err.Error()))
 	}
 
-	err = firstWav.Write("output/output-concatenated.wav")
+	err = firstWav.Write(fmt.Sprintf("%s/output.wav", currentDirectory))
 	if err != nil {
 		panic(fmt.Sprintf("Saving concatenated wav file: %v", err.Error()))
 	}
+
+	fmt.Printf("Concatenated file saved at %s/output.wav", currentDirectory)
 }

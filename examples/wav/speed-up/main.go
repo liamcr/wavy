@@ -7,8 +7,10 @@ import (
 	"github.com/liamcr/wavy/cmd/wav"
 )
 
+const currentDirectory = "examples/wav/speed-up"
+
 func main() {
-	wavFile, err := os.Open("input/input.wav")
+	wavFile, err := os.Open(fmt.Sprintf("%s/input.wav", currentDirectory))
 	if err != nil {
 		panic(fmt.Sprintf("opening wav file: %v", err.Error()))
 	}
@@ -28,8 +30,10 @@ func main() {
 		panic(fmt.Sprintf("speeding up wav file: %v", err.Error()))
 	}
 
-	err = newWav.Write("output/output-speed-up.wav")
+	err = newWav.Write(fmt.Sprintf("%s/output.wav", currentDirectory))
 	if err != nil {
 		panic(fmt.Sprintf("Saving sped-up wav file: %v", err.Error()))
 	}
+
+	fmt.Printf("Sped-up file saved at %s/output.wav", currentDirectory)
 }

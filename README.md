@@ -51,6 +51,8 @@ if err != nil {
 // slowWav will now be 4 times faster
 ```
 
+To see an example, run `go run ./examples/wav/speed-up`
+
 ### Slow Down
 
 The `.SlowDown` function lets you slow down a wav file by some set factor.
@@ -62,6 +64,8 @@ speedyWav.SlowDown(4)
 
 // speedyWav will now be 4 times slower
 ```
+
+To see an example, run `go run ./examples/wav/slow-down`
 
 ### Concatenate Two Audio Files
 
@@ -78,6 +82,8 @@ if err != nil {
 
 // firstWav is now the concatenated wav file. secondWav is unaffected.
 ```
+
+To see an example, run `go run ./examples/wav/concat`
 
 ## Convert
 
@@ -138,3 +144,5 @@ if err != nil {
 
 // output is an `os.File` representing the resulting svg file
 ```
+
+To see an example, run `go run ./examples/wav/generate-svg`

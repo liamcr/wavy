@@ -7,8 +7,10 @@ import (
 	"github.com/liamcr/wavy/cmd/wav"
 )
 
+const currentDirectory = "examples/wav/generate-svg"
+
 func main() {
-	wavFile, err := os.Open("input/input.wav")
+	wavFile, err := os.Open(fmt.Sprintf("%s/input.wav", currentDirectory))
 	if err != nil {
 		panic(fmt.Sprintf("opening wav file: %v", err.Error()))
 	}
@@ -23,8 +25,10 @@ func main() {
 		panic(fmt.Sprintf("decoding wav file: %v", err.Error()))
 	}
 
-	_, err = newWav.GenerateSvg("output/output.svg", 350, 0, "#ff0")
+	_, err = newWav.GenerateSvg(fmt.Sprintf("%s/output.svg", currentDirectory), 600, 0, "#4287f5")
 	if err != nil {
 		panic(fmt.Sprintf("decoding wav file: %v", err.Error()))
 	}
+
+	fmt.Printf("Waveform SVG saved at %s/output.svg", currentDirectory)
 }
