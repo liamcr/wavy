@@ -54,7 +54,10 @@ func (w *Wav) Concat(toAdd *Wav) error {
 	if w.SampleRate != toAdd.SampleRate {
 		// Resample the current audio file so as to not introduce side effects
 		// to the file being appended.
-		w.Resample(toAdd.SampleRate)
+		err := w.Resample(toAdd.SampleRate)
+		if err != nil {
+			return err
+		}
 	}
 
 	w.Data = append(w.Data, toAdd.Data...)

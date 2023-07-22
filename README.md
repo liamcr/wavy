@@ -70,8 +70,6 @@ by using the `.Concat` function.
 
 You can concatenate mono and stereo files together.
 
-TODO: Concatenate audio files with differing sample rates.
-
 ```go
 err := firstWav.Concat(secondWav)
 if err != nil {
@@ -107,6 +105,20 @@ if err != nil {
 }
 
 // monoWav is now a stereo audio file
+```
+
+### Resample
+
+You can adjust the sample rate of an audio file (without adjusting the length) by calling
+the `Resample` function.
+
+```go
+err := myWav.Resample(44100)
+if err != nil {
+    panic(fmt.Sprintf("Resampling wav file: %v", err.Error()))
+}
+
+// myWav now has a sample rate of 44100 Hz
 ```
 
 ## Other
