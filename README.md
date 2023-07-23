@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/liamcr/wavy.svg)](https://pkg.go.dev/github.com/liamcr/wavy)
 
-A Go Library For Transforming Audio Files
+A Go Library For Transforming Audio Files (Current version: v1.0.0)
 
 ## Reading in Wav Files
 
