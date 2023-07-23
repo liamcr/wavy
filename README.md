@@ -1,5 +1,7 @@
 # Wavy
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/liamcr/wavy.svg)](https://pkg.go.dev/github.com/liamcr/wavy)
+
 A Go Library For Transforming Audio Files
 
 ## Reading in Wav Files
